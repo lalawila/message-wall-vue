@@ -1,0 +1,13 @@
+/* 全局样式文件 */
+:root {
+    box-sizing: border-box; /* 设置根元素的 box-sizing: border-box */
+}
+*,
+*:before,
+*:after {
+    box-sizing: inherit; /* box-sizing 继承自父元素 */
+}
+
+html {
+    background-color: black;
+}
