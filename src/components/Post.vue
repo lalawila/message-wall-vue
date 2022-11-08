@@ -2,23 +2,35 @@
     <div class="post">
         <template v-if="isEdit">
             <!-- 编辑状态 -->
-            <textarea class="input-content" v-model="content"></textarea>
+            <textarea class="input-content" v-model="postContent"></textarea>
             <div class="bottom">
-                <p class="time">{{ publishTime }}</p>
+                <p class="time">{{ formatTime(publishTime) }}</p>
                 <div class="buttons">
-                    <div class="button edit" @click="confirmEdit">确认</div>
-                    <div class="button cancel" @click="cancel">取消</div>
+                    <el-button
+                        type="primary"
+                        round
+                        size="small"
+                        @click="confirmEdit"
+                        >确认</el-button
+                    >
+                    <el-button type="info" round size="small" @click="cancel"
+                        >取消</el-button
+                    >
                 </div>
             </div>
         </template>
         <template v-else>
             <!-- 正常状态 -->
-            <div class="content">{{ content }}</div>
+            <div class="content">{{ postContent }}</div>
             <div class="bottom">
-                <p class="time">{{ publishTime }}</p>
+                <p class="time">{{ formatTime(publishTime) }}</p>
                 <div class="buttons">
-                    <div class="button edit" @click="edit">编辑</div>
-                    <div class="button delete" @click="remove">删除</div>
+                    <el-button type="primary" round size="small" @click="edit"
+                        >编辑</el-button
+                    >
+                    <el-button type="danger" round size="small" @click="remove"
+                        >删除</el-button
+                    >
                 </div>
             </div>
         </template>
@@ -30,6 +42,8 @@ export default {
     data() {
         return {
             isEdit: false,
+            // 防止去修改 props 的属性
+            postContent: this.content,
         }
     },
     methods: {
@@ -41,14 +55,32 @@ export default {
             if (confirm("确认删除消息吗？")) {
                 await this.$api.deletePost(this.postId)
                 this.$el.remove()
+                this.$alert.alertSuccess("删除成功~")
             }
         },
-        confirmEdit() {
+        async confirmEdit() {
             // 确认编辑
+            await this.$api.updatePost(this.postId, this.postContent)
+
+            this.isEdit = false
+
+            this.$alert.alertSuccess("修改成功~")
         },
         cancel() {
             // 取消编辑
             this.isEdit = false
+        },
+        formatTime(timestamp) {
+            // 时间戳转成时间
+            const time = new Date(timestamp * 1000)
+            return `${time.getFullYear()}-${this.fillZero(
+                time.getMonth() + 1
+            )}-${time.getDate()} ${this.fillZero(
+                time.getHours()
+            )}:${this.fillZero(time.getMinutes())}`
+        },
+        fillZero(n) {
+            return n < 10 ? `0${n}` : n
         },
     },
 }
@@ -64,16 +96,6 @@ p {
     border-radius: 16px;
 
     margin: 20px 0;
-}
-
-.button {
-    cursor: pointer;
-
-    padding: 5px 10px;
-    /* 两端变圆 */
-    border-radius: 999999px;
-
-    user-select: none;
 }
 
 .post .content {
@@ -110,18 +132,6 @@ p {
     .post .bottom .buttons {
         opacity: 0.5;
     }
-}
-
-.post .bottom .buttons .edit {
-    background-color: teal;
-}
-
-.post .bottom .buttons .delete {
-    background-color: orangered;
-}
-
-.post .bottom .buttons .confirm {
-    background-color: teal;
 }
 
 .cancel {

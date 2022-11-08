@@ -1,0 +1,156 @@
+<template>
+    <div v-show="isShow" class="input-dialog">
+        <textarea
+            v-model="content"
+            class="input-content"
+            placeholder="请输入消息"
+        ></textarea>
+        <div class="bottom">
+            <div class="buttons">
+                <div class="button confirm" @click="confirm">确认</div>
+                <div class="button cancel" @click="cancel">取消</div>
+            </div>
+        </div>
+    </div>
+    <div class="publish" @click="show">发布</div>
+</template>
+<script>
+export default {
+    emits: ["published"],
+    data() {
+        return {
+            isShow: false,
+            content: "",
+        }
+    },
+    methods: {
+        show() {
+            this.isShow = !this.isShow
+
+            // 平滑滚到页头
+            window.scrollTo({ top: 0, behavior: "smooth" })
+        },
+        async confirm() {
+            if (this.content.length < 5) {
+                this.$alert.alertWarning("至少 5 个字符。")
+                return
+            }
+
+            if (this.content.length > 100) {
+                this.$alert.alertWarning("最多 100 个字符。")
+                return
+            }
+
+            // 发布
+            await this.$api.publishPost(this.content)
+
+            this.$alert.alertSuccess("发布成功~")
+
+            this.isShow = false
+
+            this.$emit("published")
+        },
+        cancel() {
+            this.isShow = false
+        },
+    },
+}
+</script>
+
+<style scoped>
+.input-dialog {
+    background-color: #0f0f0f;
+    padding: 20px;
+    border-radius: 16px;
+
+    margin: 20px 0;
+}
+.input-content {
+    width: 100%;
+    height: 100px;
+
+    margin-bottom: 20px;
+
+    outline: none;
+    border: none;
+    background-color: #aaa;
+
+    padding: 10px;
+
+    border-radius: 6px;
+}
+.bottom {
+    color: white;
+    font-size: 12px;
+
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.bottom .buttons {
+    display: flex;
+    /* 子项的间距 */
+    gap: 10px;
+
+    transition: opacity 0.5s;
+}
+
+.button {
+    cursor: pointer;
+
+    padding: 5px 10px;
+    /* 两端变圆 */
+    border-radius: 999999px;
+
+    user-select: none;
+}
+
+.edit {
+    background-color: teal;
+}
+
+.delete {
+    background-color: orangered;
+}
+
+.confirm {
+    background-color: teal;
+}
+
+.cancel {
+    background-color: gray;
+}
+
+.publish {
+    width: 60px;
+    height: 60px;
+
+    background-color: teal;
+    color: white;
+
+    font-weight: bold;
+    border-radius: 50%;
+
+    /* 方法一 */
+    /* text-align: center; */
+    /* 字会在一行居中 */
+    /* line-height: 60px; */
+
+    /* 方法二 */
+    display: flex;
+    /* 水平 */
+    justify-content: center;
+    /* 垂直 */
+    align-items: center;
+
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    cursor: pointer;
+
+    /* 禁止选中文本 */
+    user-select: none;
+}
+</style>
