@@ -28,9 +28,20 @@
                     <el-button type="primary" round size="small" @click="edit"
                         >编辑</el-button
                     >
-                    <el-button type="danger" round size="small" @click="remove"
-                        >删除</el-button
+
+                    <el-popconfirm
+                        title="确认删除消息吗？"
+                        confirm-button-text="是"
+                        cancel-button-text="否"
+                        @confirm="remove"
+                        width="180"
                     >
+                        <template #reference>
+                            <el-button type="danger" round size="small"
+                                >删除</el-button
+                            >
+                        </template>
+                    </el-popconfirm>
                 </div>
             </div>
         </template>
@@ -52,11 +63,9 @@ export default {
             this.isEdit = true
         },
         async remove() {
-            if (confirm("确认删除消息吗？")) {
-                await this.$api.deletePost(this.postId)
-                this.$el.remove()
-                this.$alert.alertSuccess("删除成功~")
-            }
+            await this.$api.deletePost(this.postId)
+            this.$el.remove()
+            this.$MyAlert.alertSuccess("删除成功~")
         },
         async confirmEdit() {
             // 确认编辑
@@ -64,7 +73,7 @@ export default {
 
             this.isEdit = false
 
-            this.$alert.alertSuccess("修改成功~")
+            this.$MyAlert.alertSuccess("修改成功~")
         },
         cancel() {
             // 取消编辑

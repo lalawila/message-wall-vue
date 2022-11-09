@@ -11,6 +11,7 @@
                 :publishTime="post.publish_time"
             ></Post>
         </div>
+        <el-empty v-show="isNothing" description="没有任何消息~" />
         <p v-show="isFinished" class="empty">已经没有更多消息了~</p>
     </div>
 </template>
@@ -42,6 +43,11 @@ export default {
     unmounted() {
         // 移除滚动事件
         window.removeEventListener("scroll", this.onscroll)
+    },
+    computed: {
+        isNothing() {
+            return this.posts.length === 0
+        },
     },
     methods: {
         async getPosts(refresh = false) {

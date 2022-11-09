@@ -32,19 +32,19 @@ export default {
         },
         async confirm() {
             if (this.content.length < 5) {
-                this.$alert.alertWarning("至少 5 个字符。")
+                this.$MyAlert.alertWarning("至少 5 个字符。")
                 return
             }
 
             if (this.content.length > 100) {
-                this.$alert.alertWarning("最多 100 个字符。")
+                this.$MyAlert.alertWarning("最多 100 个字符。")
                 return
             }
 
             // 发布
             await this.$api.publishPost(this.content)
 
-            this.$alert.alertSuccess("发布成功~")
+            this.$MyAlert.alertSuccess("发布成功~")
 
             this.isShow = false
 
@@ -106,22 +106,6 @@ export default {
     user-select: none;
 }
 
-.edit {
-    background-color: teal;
-}
-
-.delete {
-    background-color: orangered;
-}
-
-.confirm {
-    background-color: teal;
-}
-
-.cancel {
-    background-color: gray;
-}
-
 .publish {
     width: 60px;
     height: 60px;
@@ -152,5 +136,7 @@ export default {
 
     /* 禁止选中文本 */
     user-select: none;
+
+    z-index: 888;
 }
 </style>
