@@ -7,8 +7,12 @@
         ></textarea>
         <div class="bottom">
             <div class="buttons">
-                <div class="button confirm" @click="confirm">确认</div>
-                <div class="button cancel" @click="cancel">取消</div>
+                <el-button type="primary" round size="small" @click="confirm"
+                    >确认</el-button
+                >
+                <el-button type="info" round size="small" @click="cancel"
+                    >取消</el-button
+                >
             </div>
         </div>
     </div>
@@ -86,24 +90,6 @@ export default {
     display: flex;
     justify-content: end;
     align-items: center;
-}
-
-.bottom .buttons {
-    display: flex;
-    /* 子项的间距 */
-    gap: 10px;
-
-    transition: opacity 0.5s;
-}
-
-.button {
-    cursor: pointer;
-
-    padding: 5px 10px;
-    /* 两端变圆 */
-    border-radius: 999999px;
-
-    user-select: none;
 }
 
 .publish {
